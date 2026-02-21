@@ -33,11 +33,10 @@ class FibersSymfonyRunner implements RunnerInterface {
     public function run(): int {
         $server = new FiberServer(
             \sprintf(
-                "tcp://%s%s%s",
+                "tcp://%s:%s%s",
                 $this->host,
                 $this->port,
                 $this->prefix
-
             )
         );
 
