@@ -1,5 +1,6 @@
 {
     "name": "tg/fiber-server",
+    "version": "0.0.1",
     "autoload": {
         "psr-4": {
             "Tg\\FiberServer\\": "src/"
