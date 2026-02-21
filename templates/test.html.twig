@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <link rel="stylesheet" href="assets/index.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <b>{{ title|default("Test Page") }}</b>
+            <ul>
+                {% for item in menu|default([]) %}
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">{{item}}</a>    
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>{{ title|default("Test Page") }}</h1>
+        <p>This is rendering fine</p>
+    </main>
+</body>
+</html>

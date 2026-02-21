@@ -1,0 +1,24 @@
+{
+    "name": "tg/fiber-server",
+    "autoload": {
+        "psr-4": {
+            "Tg\\FiberServer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kf",
+            "email": "opikolim@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/runtime": "^8.0",
+        "symfony/http-kernel": "^8.0",
+        "twig/twig": "^3.23"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true
+        }
+    }
+}
