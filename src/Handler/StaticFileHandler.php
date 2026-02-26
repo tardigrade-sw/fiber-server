@@ -40,10 +40,11 @@ class StaticFileHandler extends AbstractHandler {
             $formats[] = "\.$format";
         }
 
-        $lookahead = empty($this->excludePatterns) ? '' : \sprintf('(?!%s)', \implode("|", $this->excludePatterns));
+        $quotedExcludes = \array_map(fn($p) => \preg_quote($p, '#'), $this->excludePatterns);
+        $lookahead = empty($quotedExcludes) ? '' : \sprintf('(?!/?(?:%s))', \implode("|", $quotedExcludes));
 
         $pattern =  \sprintf(
-            '/^%s.+(%s)$/',
+            '#^%s.+(%s)$#',
             $lookahead,
             \implode("|", $formats)
         );

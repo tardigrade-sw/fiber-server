@@ -67,7 +67,7 @@ class FibersSymfonyRunner implements RunnerInterface {
         $server->addHandler(new SymfonyHandler($this->kernel));
         $server->addHandler(new DumpHandler());
         $server->addPrivilegedHandler(new StaticFileHandler($this->allowedStatics, $this->publicPath, [
-            'cache/resolve'
+            'media/cache/resolve'
         ]));
         $server->listen();
     }
