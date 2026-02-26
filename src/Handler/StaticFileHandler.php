@@ -15,12 +15,14 @@ class StaticFileHandler extends AbstractHandler {
 
     private array $formats;
     private string $dir;
+    private array $excludePatterns;
     private Map $cache;
 
-    public function __construct(array $formats, string $dir)
+    public function __construct(array $formats, string $dir, array $excludePatterns = [])
     {
         $this->formats = $formats;
         $this->dir = $dir;
+        $this->excludePatterns = $excludePatterns;
         $this->cache = new Map();
 
         parent::__construct();
@@ -38,8 +40,11 @@ class StaticFileHandler extends AbstractHandler {
             $formats[] = "\.$format";
         }
 
+        $lookahead = empty($this->excludePatterns) ? '' : \sprintf('(?!%s)', \implode("|", $this->excludePatterns));
+
         $pattern =  \sprintf(
-            '/^\/.+(%s)$/',
+            '/^%s.+(%s)$/',
+            $lookahead,
             \implode("|", $formats)
         );
 
