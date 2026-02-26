@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tg\FiberServer\Bridge;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Tg\FiberServer\Component\HttpCore\Request;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -17,12 +18,17 @@ class RequestTransfromer {
             $server[$name] = $value;
         }
 
+        $files = [];
+        foreach ($request->files as $name => $fileData) {
+            $files[$name] = self::toSymfonyFile($fileData);
+        }
+
         $symfonyRequest = new SymfonyRequest(
             query: $request->query->toArray(),
             request: $request->params->toArray(),
             attributes: $request->attributes->toArray(),
             cookies: $request->cookies->toArray(),
-            files: $request->files->toArray(),
+            files: $files,
             server: $server,
             content: $request->getContent(),
         );
@@ -52,10 +58,54 @@ class RequestTransfromer {
         $request->params->replace($symfonyRequest->request->all());
         $request->attributes->replace($symfonyRequest->attributes->all());
         $request->cookies->replace($symfonyRequest->cookies->all());
-        $request->files->replace($symfonyRequest->files->all());
+        
+        $files = [];
+        foreach ($symfonyRequest->files->all() as $key => $value) {
+            $files[$key] = self::fromSymfonyFile($value);
+        }
+        $request->files->replace($files);
+
         $request->server->replace($symfonyRequest->server->all());
         $request->setContent($symfonyRequest->getContent());
 
         return $request;
+    }
+
+    private static function fromSymfonyFile(mixed $value): mixed
+    {
+        if ($value instanceof UploadedFile) {
+            return [
+                'name' => $value->getClientOriginalName(),
+                'content' => \file_exists($value->getPathname()) ? \file_get_contents($value->getPathname()) : '',
+                'tmp_path' => $value->getPathname()
+            ];
+        }
+
+        if (is_array($value)) {
+            return array_map(fn($v) => self::fromSymfonyFile($v), $value);
+        }
+
+        return $value;
+    }
+
+    private static function toSymfonyFile(mixed $fileData): mixed
+    {
+        if ($fileData instanceof UploadedFile) {
+            return $fileData;
+        }
+
+        if (is_array($fileData) && isset($fileData['tmp_path'])) {
+            return new UploadedFile(
+                path: $fileData['tmp_path'],
+                originalName: $fileData['name'],
+                test: true
+            );
+        }
+
+        if (is_array($fileData)) {
+            return array_map(fn($v) => self::toSymfonyFile($v), $fileData);
+        }
+
+        return $fileData;
     }
 }
