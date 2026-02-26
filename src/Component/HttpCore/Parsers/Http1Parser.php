@@ -218,13 +218,13 @@ class Http1Parser {
         $contentType = $request->getContentType();
         $content = $request->getContent();
 
-        if ($contentType === 'application/x-www-form-urlencoded') {
+        if (str_starts_with($contentType, 'application/x-www-form-urlencoded')) {
             \parse_str($content, $params);
-            $request->params = new Params($params);
+            $request->params->replace($params ?? []);
         } elseif ($request->isJson()) {
             $params = \json_decode($content, true);
             if (\is_array($params)) {
-                $request->params = new Params($params);
+                $request->params->replace($params);
             }
         }
     }

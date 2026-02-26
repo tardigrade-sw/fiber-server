@@ -18,11 +18,30 @@ class ResponseTransfromer {
 
         $headers = new HttpHeadersMap();
         foreach ($symfonyResponse->headers->all() as $name => $values) {
-            $headers->put($name, implode(', ', $values));
+            if (\in_array(\strtolower($name), ['connection', 'transfer-encoding', 'content-length', 'keep-alive'], true)) {
+                continue;
+            }
+            if (\count($values) === 1) {
+                $headers->put($name, $values[0]);
+            } else {
+                $headers->put($name, $values);
+            }
+        }
+
+        $content = (string)$symfonyResponse->getContent();
+        if (\str_starts_with($content, "\e[") || \str_contains($content, " \e[") || \str_contains($content, "\n\e[")) {
+            $content = \preg_replace('/\e[[][A-Za-z0-9:;?]*[a-zA-Z]/', '', $content);
+            if ($symfonyResponse->getStatusCode() >= 400 && !\str_starts_with(\trim($content), '<')) {
+                // If it's an error dump but not HTML, at least make it readable in the browser
+                $content = \sprintf(
+                    "<html><body style='background:#111;color:#eee;font-family:monospace;padding:2em;'><h1>Dev Error</h1><pre style='background:#222;padding:1em;border-radius:4px;'>%s</pre></body></html>",
+                    \htmlspecialchars($content)
+                );
+            }
         }
 
         return new Response(
-            (string)$symfonyResponse->getContent(),
+            $content,
             $symfonyResponse->getStatusCode(),
             $headers
         );

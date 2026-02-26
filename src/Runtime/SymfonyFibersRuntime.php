@@ -25,7 +25,7 @@ class SymfonyFibersRuntime extends GenericRuntime implements RuntimeInterface {
                 host: $this->options['host'],
                 port: $this->options['port'] ?? 80,
                 allowedStatics: $this->options['allowed_statics'] ?? [
-                    'ico', 'jpg', 'jpeg', 'png', 'webp', 'webm', 'js', 'css', 'svg',
+                    'ico', 'jpg', 'jpeg', 'png', 'webp', 'webm', 'js', 'css', 'svg', 'woff', 'woff2', 'tiff'
                 ]
             );
         }

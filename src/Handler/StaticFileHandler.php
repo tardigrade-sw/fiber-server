@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tg\FiberServer\Handler;
 
 use Ds\Map;
+use Symfony\Component\Stopwatch\Stopwatch;
 use Tg\FiberServer\Component\HttpCore\BinaryFileResponse;
 use Tg\FiberServer\Component\HttpCore\HttpStatus;
 use Tg\FiberServer\Component\HttpCore\Request;

@@ -28,6 +28,8 @@ abstract class TwigHandler extends AbstractHandler {
         int $status = HttpStatus::OK, 
         ?HttpHeadersMap $headers = null
     ) : Response {
+
+        dd($view);
         
         $content = $this->twig->render($view, $context);
 

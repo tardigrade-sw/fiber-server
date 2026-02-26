@@ -46,7 +46,13 @@ class Response {
         $output = "HTTP/1.1 " . $this->status . " " . HttpStatus::getMessage($this->status) . "\r\n";
 
         foreach ($this->headers as $key => $value) {
-            $output .= "$key: $value\r\n";
+            if (\is_array($value)) {
+                foreach($value as $v) {
+                    $output .= "$key: $v\r\n";
+                }
+            } else {
+                $output .= "$key: $value\r\n";
+            }
         }
 
         if(!empty($this->content)) {

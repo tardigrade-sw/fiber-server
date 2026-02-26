@@ -16,6 +16,7 @@ class Request {
     public Cookies $cookies;
     public Server $server;
     public BaseMap $files;
+    public ?Session\Session $session = null;
 
     private string $body = '';
     private string $method = '';
@@ -50,17 +51,14 @@ class Request {
     
 
     public function isJson(): bool {
-        return \in_array(
+        return \str_starts_with(
             $this->getContentType(),
-            [
-                'text/json',
-                'applicaiton/json'
-            ]
+            'application/json'
         );
     }
 
     public function getContentType(): string {
-        return $this->headers->get('Content-Type', 'text/html');
+        return $this->headers->get('content-type', 'text/html');
     }
 
     public function toArray(): array {

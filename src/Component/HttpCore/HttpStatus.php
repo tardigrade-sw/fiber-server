@@ -8,6 +8,7 @@ class HttpStatus {
     public const int NotModified = 304;
     public const int MovedPermanantly = 301;
     public const int Found = 302;
+    public const int SeeOther = 303;
     public const int PermanentRedirect = 308;
     public const int BadRequest = 400;
     public const int Forbidden = 403;
